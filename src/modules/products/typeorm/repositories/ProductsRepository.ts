@@ -9,6 +9,10 @@ class ProductRepository {
     this.ormRepository = AppDataSource.getRepository(Product);
   }
 
+  public async find(): Promise<Product[]> {
+    return this.ormRepository.find();
+  }
+
   public async findByName(name: string): Promise<Product | undefined> {
     const product = await this.ormRepository.findOne({
       where: {
