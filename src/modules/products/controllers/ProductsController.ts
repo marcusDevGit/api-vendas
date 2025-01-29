@@ -6,38 +6,56 @@ import UpdateProductService from '../services/UpdateProductService';
 import DeleteProductService from '../services/DeleteProductService';
 
 export default class ProductsController {
-  public async index(request: Request, response: Response): Promise<void> {
+  public async index(req: Request, res: Response): Promise<void> {
     const listProducts = new ListProductsService();
     const products = await listProducts.execute();
-    response.json(products);
+    res.json(products);
   }
 
-  public async show(request: Request, response: Response): Promise<void> {
-    const { id } = request.params;
+  public async show(
+    req: Request<{ id: string }>,
+    res: Response,
+  ): Promise<void> {
+    const { id } = req.params;
     const showProduct = new ShowProductService();
     const product = await showProduct.execute({ id });
-    response.json(product);
+    res.json(product);
   }
 
-  public async create(request: Request, response: Response): Promise<void> {
-    const { name, price, quantity } = request.body;
+  public async create(
+    req: Request<
+      unknown,
+      unknown,
+      { name: string; price: number; quantity: number }
+    >,
+    res: Response,
+  ): Promise<void> {
+    const { name, price, quantity } = req.body;
     const createProduct = new CreateProductService();
     const product = await createProduct.execute({ name, price, quantity });
-    response.json(product);
+    res.json(product);
   }
 
-  public async update(request: Request, response: Response): Promise<void> {
-    const { id } = request.params;
-    const { name, price, quantity } = request.body;
+  public async update(
+    req: Request<
+      { id: string },
+      Record<string, unknown>,
+      { name: string; price: number; quantity: number }
+    >,
+    res: Response,
+  ): Promise<void> {
+    const { id } = req.params;
+    const { name, price, quantity } = req.body;
     const updateProduct = new UpdateProductService();
     const product = await updateProduct.execute({ id, name, price, quantity });
-    response.json(product);
+    res.json(product);
   }
 
-  public async delete(request: Request, response: Response): Promise<void> {
-    const { id } = request.params;
+  public async delete(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
     const deleteProduct = new DeleteProductService();
     await deleteProduct.execute({ id });
-    response.json({ message: 'Product deleted successfully' });
+    res.json({ message: 'Product deleted successfully' });
+    res.json([]);
   }
 }
